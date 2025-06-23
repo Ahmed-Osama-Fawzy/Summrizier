@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Users
+from app.models import Users, TextSummary
 
 @app.route('/')
 def Home():
@@ -17,3 +17,20 @@ def Login():
             return jsonify({"message": "Account not found", "status": "failed"}), 404
     except Exception as e:
         return jsonify({"message": "Server error", "status": "failed"}), 500
+
+
+@app.route("/AddTextSummary", methods = ["POST"])
+def AddTextSummary():
+    try:
+        data = request.get_json()
+        UserId = data.get("UserId")
+        Text = data.get("MainText")
+        Summary = data.get("TextSummary")
+        newRecord = TextSummary(UserId=UserId, Text=Text, Summary=Summary)
+        db.session.add(newRecord)
+        db.session.commit()
+        return jsonify({"message": "Account not found", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "Server error, "+ e, "status": "failed"}), 500
+
