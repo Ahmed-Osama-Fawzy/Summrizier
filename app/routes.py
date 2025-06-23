@@ -76,7 +76,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'Elkhayalsoftwarecompany@gmail.com'
-app.config['MAIL_PASSWORD'] = 'eLKHAYAL1-1sOFTWARE2-2cOMPANY3-3'
+app.config['MAIL_PASSWORD'] = 'lohpnpdupazdbpcp'
 app.config['MAIL_DEFAULT_SENDER'] = 'Elkhayalsoftwarecompany@gmail.com'
 mail = Mail(app)
 
@@ -119,6 +119,7 @@ def Register():
 
     except Exception as e:
         return jsonify({"message": "Error: " + str(e), "status": "failed"}), 500
+
 
 @app.route("/VerifyOTP", methods=["POST"])
 def VerifyOTP():
