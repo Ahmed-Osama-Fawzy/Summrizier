@@ -7,7 +7,8 @@ class Users(db.Model):
 
 class TextSummary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    UserId = db.Column()
+    UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     Text = db.Column(db.Text, nullable=False)
     Summary = db.Column(db.Text, nullable=False)
+    user = db.relationship('Users', backref=db.backref('summaries', lazy=True))
     
