@@ -9,11 +9,11 @@ def Home():
 @app.route("/Login", methods=["POST"])
 def Login():
     try:
-        AllUsers = Users.query.all()
-        Data = request.get_json()
-        for Record in AllUsers:
-            if Record.email == Data.get("email") and Record.password == Data.get("password"):
-                return jsonify({"message":"Finded User", "status":"success"}), 200
+        data = request.get_json()
+        user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
+        if user:
+            return jsonify({"message": "Found User", "status": "success"}), 200
+        else:
+            return jsonify({"message": "Account not found", "status": "failed"}), 404
     except Exception as e:
-        return jsonify({"message":"Account not Finded", "status":"failed"}), 500
-    
+        return jsonify({"message": "Server error", "status": "failed"}), 500
