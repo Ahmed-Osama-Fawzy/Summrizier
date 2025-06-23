@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Users, TextSummary
+from app.models import Users, TextSummary, BookSummary
 
 @app.route('/')
 def Home():
@@ -17,7 +17,6 @@ def Login():
             return jsonify({"message": "Account not found", "status": "failed"}), 404
     except Exception as e:
         return jsonify({"message": "Server error", "status": "failed"}), 500
-
 
 @app.route("/AddTextSummary", methods=["POST"])
 def AddTextSummary():
@@ -42,3 +41,28 @@ def AddTextSummary():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+@app.route("/AddBookSummary", methods=["POST"])
+def AddBookSummary():
+    try:
+        data = request.get_json()
+        UserId = data.get("UserId")
+        Book = data.get("Book")
+        Summary = data.get("Summary")
+
+        if not all([UserId, Book, Summary]):
+            return jsonify({"message": "Missing fields", "status": "failed"}), 400
+
+        user = Users.query.get(UserId)
+        if not user:
+            return jsonify({"message": "User not found", "status": "failed"}), 404
+
+        newRecord = BookSummary(UserId=UserId, Book=Book, Summary=Summary)
+        db.session.add(newRecord)
+        db.session.commit()
+
+        return jsonify({"message": "Book Summary Added Successfully", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
