@@ -16,7 +16,7 @@ def Login():
         else:
             return jsonify({"message": "Account not found", "status": "failed"}), 404
     except Exception as e:
-        return jsonify({"message": "Server error", "status": "failed"}), 500
+        return jsonify({"message": f"Server error, {str(e)}", "status": "failed"}), 500
 
 @app.route("/AddTextSummary", methods=["POST"])
 def AddTextSummary():
@@ -65,3 +65,4 @@ def AddBookSummary():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
