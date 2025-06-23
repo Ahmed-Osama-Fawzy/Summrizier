@@ -79,7 +79,7 @@ def Register():
         if user:
             return jsonify({"message": "User Exsits", "status": "failed"}), 400
         else:
-            OTP = random.randint(100000,000000)
+            OTP = str(random.randint(100000, 999999))
             return jsonify({"message": "OTP Geranted", "status": "pending","OTP":OTP}), 200
     except Exception as e:
         return jsonify({"message":"Error Is: "+str(e), "status":"failed"}), 500
