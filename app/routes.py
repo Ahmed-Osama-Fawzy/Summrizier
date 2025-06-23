@@ -149,3 +149,13 @@ def VerifyOTP():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
+    
+@app.route('/test-email')
+def test_email():
+    try:
+        msg = Message("Test Email", recipients=["ahmdosama2611@gmail.com"])
+        msg.body = "This is a test email from Flask."
+        mail.send(msg)
+        return "Email sent!"
+    except Exception as e:
+        return f"Error: {str(e)}"
