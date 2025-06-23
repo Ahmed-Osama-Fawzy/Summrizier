@@ -24,8 +24,8 @@ def AddTextSummary():
     try:
         data = request.get_json()
         UserId = data.get("UserId")
-        Text = data.get("MainText")
-        Summary = data.get("TextSummary")
+        Text = data.get("Text")
+        Summary = data.get("Summary")
 
         if not all([UserId, Text, Summary]):
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
