@@ -1,0 +1,146 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+{% endblock %}
+
+{% block PageContent %}
+    <main>
+        <!-- Form Section -->
+        <section class="container">
+            <h2 class="SectionTitle"> إترك لنا انطباعك عنا هنا!  </h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2">
+                <div class="col">
+                    <img src="{{url_for('static', filename='assets/Review.png')}}" class="w-100 h-100">
+                </div>
+                <form class="col" id="ReviewForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="personName" class="form-label"> الأسم </label>
+                        <input type="text" class="form-control" id="personName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="personJob" class="form-label"> الوظيفة </label>
+                        <input type="text" class="form-control" id="personJob" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="personCity" class="form-label"> المحافظة </label>
+                        <input type="text" class="form-control" id="personCity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobileNumber" class="form-label">رقم الهاتف \ رقم الواتساب </label>
+                        <input type="text" class="form-control" id="mobileNumber">
+                    </div>
+                    <div class="divider">أو</div>
+                    <div class="mb-3">
+                        <label for="emailAddress" class="form-label">  عنوان بريدك الالكتروني </label>
+                        <input type="email" class="form-control" id="emailAddress">
+                    </div>
+                    <div class="mb-3">
+                        <label for="personRateRange" class="form-label">كم تعطنا !</label>
+                        <input type="range" class="form-range" min="1" max="5" step="1" id="personRateRange">
+                        <div class="text-end">
+                            <span id="rateValue">3</span> / 5
+                        </div>
+                        <input type="hidden" name="personRate" id="personRate" value="3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewMessage" class="form-label"> اترك لنا رسالتك هنا </label>
+                        <textarea class="form-control" id="reviewMessage" name="reviewMessage" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">إرسال</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <div class="modal" tabindex="-1" id="modelContainer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">شكرا لكم عملائنا الكرام</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modelMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block ScriptsContent %}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rateRange = document.getElementById('personRateRange');
+            const rateValueDisplay = document.getElementById('rateValue');
+            const personRateInput = document.getElementById('personRate');
+
+            // Set initial value
+            rateRange.value = 3;
+            rateValueDisplay.textContent = rateRange.value;
+            personRateInput.value = rateRange.value;
+
+            rateRange.addEventListener('input', () => {
+                rateValueDisplay.textContent = rateRange.value;
+                personRateInput.value = rateRange.value;
+            });
+        });
+
+        const ReviewForm = document.getElementById("ReviewForm")
+        const modelMessage = document.getElementById("modelMessage")
+        const theModel = new bootstrap.Modal(document.getElementById("modelContainer"))
+        ReviewForm.onsubmit = async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("personName").value.trim();
+            const job = document.getElementById("personJob").value.trim();
+            const city = document.getElementById("personCity").value.trim();
+            const phone = document.getElementById("mobileNumber").value.trim();
+            const email = document.getElementById("emailAddress").value.trim();
+            const rate = document.getElementById("personRate").value;
+            const message = document.getElementById("reviewMessage").value.trim();
+
+            if (!phone && !email) {
+                modelMessage.textContent = "يرجى إدخال رقم الهاتف أو البريد الإلكتروني أو كليهما";
+                theModel.show();
+                return;
+            }
+
+            const data = {
+                name,
+                job,
+                city,
+                phone,
+                email,
+                rate,
+                message
+            };
+
+            console.log(data)
+
+            try {
+                const response = await fetch('/addReview', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                modelMessage.textContent = result.message;
+                theModel.show();
+                
+                if (data.status === "success") {
+                    setTimeout(() => location.reload(), 2000);
+                }
+
+            } catch (e){
+                modelMessage.textContent = result.message;
+                theModel.show();
+                console.log(f`Error Is: ${e}`)
+            }
+        }
+    </script>
+{% endblock %}

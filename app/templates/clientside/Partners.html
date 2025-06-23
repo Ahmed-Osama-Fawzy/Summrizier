@@ -1,0 +1,72 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+{% endblock %}
+
+{% block PageContent %}
+    <main>
+        <!-- Partners Section -->
+        <section class="container">
+            <h2 class="SectionTitle"> شركاء نجاحنا </h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/Alumil.png')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> ألوميل </span>
+                            <span class="col"> ألومنيوم </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/Eldwlia.png')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> الدولية </span>
+                            <span class="col"> الوان </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/Elsaad.jpg')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> السعد </span>
+                            <span class="col"> الومنيوم </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/Elsllam.png')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> السلام </span>
+                            <span class="col"> الومنيوم </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/ShreifAliHassan.jpeg')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> شريف علي حسن </span>
+                            <span class="col"> ألومنيوم </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="text-center  XMision">
+                        <img src="{{url_for('static', filename='assets/Partners/Greiche.jpg')}}" height="150" width="150"  class="rounded-4">
+                        <div class="w-100 row row-cols-2 flex-nowrap justify-content-around text-body-secondary">
+                            <span class="col"> جريش </span>
+                            <span class="col"> زجاج </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block ScriptsContent %}
+{% endblock %}

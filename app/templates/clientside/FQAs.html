@@ -1,0 +1,42 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+{% endblock %}
+
+{% block PageContent %}
+    <main>
+        <div class="container">
+            <!-- Search Bar -->
+            <form class="d-flex m-5" role="search" id="searchForm">
+                <input class="form-control me-2" id="faqSearch" type="search" placeholder="Search FAQs..." aria-label="Search">
+                <button type="button" class="btn btn-outline-secondary" id="searchButton">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        
+            <!-- No results message (hidden by default) -->
+            <div id="noResults" class="alert alert-warning d-none m-3" role="alert">
+                No matching questions found.
+            </div>
+        
+            <div class="accordion" id="accordionExample">
+            <div class="accordion-item searchable">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        Question
+                    </button>
+                </h2>
+                <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">Answer</div>
+                </div>
+                </div>
+            </div>
+        
+            <!-- Ask a Question Button -->
+            <a href="{{url_for('ContactUs')}}" class="btn btn-primary m-5">Ask a Question</a>
+        </div>
+    </main>
+{% endblock %}
+
+{% block ScriptsContent %}
+{% endblock %}

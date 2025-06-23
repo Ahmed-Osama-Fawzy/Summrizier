@@ -1,0 +1,215 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+{% endblock %}
+
+{% block PageContent %}
+    <main>
+        <!-- Who We are Section -->
+        <section class="text-center">
+            <h2 class="SectionTitle">  هيا بنا للتعرف علي شركتنا  </h2>
+            <div class="Numbers">
+                <div class="conatiner row row-cols-1 row-cols-md-2 row-cols-lg-2 p-4">
+                    <div class="col justify-content-center align-content-center">
+                        <img src="{{url_for('static', filename='assets/FullLogoLight.JPEG')}}" height="300" width="300" class="rounded-4">
+                    </div>
+                    <div class=" mt-4 col justify-content-center align-content-center">
+                        <p class="p-5 fs-4"> مرحبًا بكم في شركة <strong>الإسراء </strong> الاسم الذي يجمع بين الأصالة والاحتراف في عالم الألومنيوم. منذ تأسيسنا في عام 1998, نحن ملتزمون بتقديم منتجات ألومنيوم متميزة تضيف إلى منازل عملائنا ومشروعاتهم لمسة من الجودة والجمال والعملية. بخبرة تمتد لأكثر من 25 عامًا، أصبحنا من الشركات الرائدة في صناعة الألومنيوم في مصر والمنطقة.
+                            نحن متخصصون في تصنيع وتركيب أنظمة الألومنيوم المتكاملة، ونقدّم حلولًا مبتكرة تلبّي احتياجات السوق العصري، سواء للمنازل، الشركات، أو المشروعات المعمارية الكبرى </p>    
+                    </div>    
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission & Vision Section -->
+        <section>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 w-100 p-5">
+                <div class="col">
+                    <div class="Vision">
+                        <div class="d-flex">
+                            <i class="fa-solid fa-road fa-3x"></i>
+                            <span>رسالتنا</span>
+                        </div>
+                        <p>
+                            نسعى في شركة الإسراء إلى تقديم تجربة متكاملة لعملائنا، تبدأ من الاستشارة المجانية، مرورًا بالتصميم والتنفيذ، وحتى التسليم النهائي. 
+                        </p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Vision">
+                        <div class="d-flex">
+                            <i class="fa-solid fa-eye fa-3x"></i>
+                            <span>رؤيتنا</span>
+                        </div>
+                        <p>
+                            أن نصبح الشركة الرائدة في مجال خدمات الألومنيوم في مصر والمنطقة، من خلال تقديم حلول متطورة، ذات جودة عالية، وتفاصيل مصممة بعناية لكل عميل
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Founder Section -->
+        <section class="container text-center">
+            <h2 class="SectionTitle">  المؤسس  </h2>
+            <div class="conatiner row row-cols-1 row-cols-md-2 row-cols-lg-2 p-4">
+                <div class="col justify-content-center align-content-center">
+                    <img src="{{url_for('static', filename='assets/Founder.png')}}" height="250" width="250">
+                </div>
+                <div class=" mt-4 col justify-content-center align-content-center">
+                    <div class="Mision" style="height: auto !important;">
+                        <p class="p-1"> أسس شركة الإسراء <strong>الأستاذ/ أسامة فوزي </strong> عام 1999، انطلاقًا من شغفه بمجال الألومنيوم وسعيه الدائم لتقديم منتجات تجمع بين الجودة العالية والتصميم العصري.
+                            بفضل خبرته الطويلة وحرصه على التفاصيل، استطاع أن يرسّخ اسم "الإسراء" كعلامة موثوقة في السوق المصري، تُعرف بالاتقان، الالتزام، والاحترافية.
+                            قاد الأستاذ هسهامة فوزي رحلة الشركة من بدايتها كورشة صغيرة إلى شركة محترفة تخدم مئات العملاء وتغطي مناطق متعددة داخل الجمهورية.
+                            كلمة من المؤسس: <strong><q> نذ اللحظة الأولى كان هدفنا أن نكون أكثر من مجرد شركة؛ أردنا أن نكون اسمًا يُعتمد عليه... ثقة تلمسها في كل تفصيلة </q></strong>
+                        </p>        
+                    </div>    
+                </div>    
+            </div>
+        </section>
+
+        <!-- Our Values Section -->
+        <section class="continer text-center">
+            <h2 class="SectionTitle"> قيمنا </h2>
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 p-5">
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-diamond fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الاحترافية </span>
+                        <p class="nav-link p-0 text-body-secondary">نلتزم بالدقة في العمل والانضباط في المواعيد</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-diamond fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الجودة </span>
+                        <p class="nav-link p-0 text-body-secondary">لا نقدم إلا الأفضل</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-diamond fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الشفافية </span>
+                        <p class="nav-link p-0 text-body-secondary">وضوح كامل في التعامل مع العميل</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-diamond fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الابتكار </span>
+                        <p class="nav-link p-0 text-body-secondary"> نطوّر باستمرار لنلبّي حاجات السوق العصري </p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-diamond fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> رضا العميل </span>
+                        <p class="nav-link p-0 text-body-secondary"> هو الهدف الأساسي لكل ما نقوم به </p>
+                    </div>
+                </div>
+            </div>    
+        </section>
+
+        <!-- Our Service Section -->
+        <section class="continer text-center">
+            <h2 class="SectionTitle"> خدماتنا </h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 p-5">
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> شبابيك </span>
+                        <p class="nav-link p-0 text-body-secondary">أنظمة عزل صوتي وحراري، بتصميمات حديثة ومتانة عالية تناسب مختلف الاستخدامات</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> أبواب </span>
+                        <p class="nav-link p-0 text-body-secondary">أنظمة عزل صوتي وحراري، بتصميمات حديثة ومتانة عالية تناسب مختلف الاستخدامات</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> مطابخ </span>
+                        <p class="nav-link p-0 text-body-secondary">صميم وتنفيذ مطابخ عصرية مقاومة للرطوبة والحرارة، مع تشكيلة متنوعة من الألوان والمقاسات</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> شيش حصيرة </span>
+                        <p class="nav-link p-0 text-body-secondary">لحماية الخصوصية وتوفير الراحة، بتصميمات حديثة وجودة تصنيع عالية</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> تند إيطالي </span>
+                        <p class="nav-link p-0 text-body-secondary">توفير الحماية من أشعة الشمس والأمطار مع مظهر راقٍ يتناسب مع مختلف الواجهات</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-circle fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2">  وحدات منفصلة من الألومنيوم والزجاج</span>
+                        <p class="nav-link p-0 text-body-secondary">تنفيذ واجهات للمباني بتصميمات معمارية جذابة تعكس هوية المكان</p>
+                    </div>
+                </div>
+            </div>    
+        </section>
+
+        <!-- Servied Countries Section -->
+        <section class="continer text-center">
+            <h2 class="SectionTitle"> قادرين علي نوصيل خماتنا في جميع أنحاءالجمهورية </h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 p-5">
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-truck-pickup fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> القاهرة الكبرى </span>
+                        <p class="nav-link p-0 text-body-secondary">القاهرة – الجيزة – القليوبية</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-truck-pickup fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الدلتا  </span>
+                        <p class="nav-link p-0 text-body-secondary">لمنوفية – الغربية – الشرقية – الدقهلية - كفرالشيخ</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-truck-pickup fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> الصعيد </span>
+                        <p class="nav-link p-0 text-body-secondary">بعض مناطق الصعيد حسب الطلب</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="Mision">
+                        <i class="fa-solid fa-truck-pickup fa-3x m-3"></i>
+                        <br>
+                        <span class="m-2"> آخري </span>
+                        <p class="nav-link p-0 text-body-secondary">إمكانية التوصيل لأي محافظة داخل مصر بالتنسيق المسبق</p>
+                    </div>
+                </div>
+            </div>    
+        </section>
+    </main>
+{% endblock %}
+
+{% block ScriptsContent %}
+{% endblock %}

@@ -1,9 +1,17 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "api/index.py", "use": "@vercel/python" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "api/index.py" }
-  ]
+    "builds":[
+        {
+            "src": "run.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "run.py"
+        }
+    ],
+    "env": {
+        "DATABASE_URL": "postgresql+psycopg2://neondb_owner:npg_SkKLR1CPGNq8@ep-falling-butterfly-a46glh9b-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+    }
 }

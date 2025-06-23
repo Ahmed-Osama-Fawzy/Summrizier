@@ -1,0 +1,68 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+
+{% endblock %}
+
+{% block PageContent %}
+<main class="container">
+    <div class="m-3">
+        <button type="button" class="btn btn-primary TypeButton m-1" data-type="All">الكل <span class="badge text-bg-secondary">{{Lenghts.FullLen}}</span></button>
+        <button type="button" class="btn btn-secondary TypeButton m-1" data-type="Window">شبابيك <span class="badge text-bg-secondary">{{Lenghts.LenWindow}}</span></button>
+        <button type="button" class="btn btn-secondary TypeButton m-1" data-type="Door">أبواب <span class="badge text-bg-secondary">{{Lenghts.LenDoor}}</span></button>
+        <button type="button" class="btn btn-success TypeButton m-1" data-type="Kitchen">مطابخ <span class="badge text-bg-secondary">{{Lenghts.LenKitchen}}</span></button>
+        <button type="button" class="btn btn-danger TypeButton m-1" data-type="Shutter">شيش حصيرة <span class="badge text-bg-secondary">{{Lenghts.LenShutter}}</span></button>
+        <button type="button" class="btn btn-warning TypeButton m-1" data-type="Cover">تند خارجية <span class="badge text-bg-secondary">{{Lenghts.LenCover}}</span></button>
+        <button type="button" class="btn btn-info TypeButton m-1" data-type="Units">وحدات منفصلة <span class="badge text-bg-secondary">{{Lenghts.LenUnits}}</span></button>
+        <button type="button" class="btn btn-light TypeButton m-1" data-type="Shape">ديكور <span class="badge text-bg-secondary">{{Lenghts.LenShape}}</span></button>
+        <button type="button" class="btn btn-dark TypeButton m-1" data-type="Save">حماية شبابيك <span class="badge text-bg-secondary">{{Lenghts.LenSave}}</span></button>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {% for Item in Data %}
+            <div class="col Item {{Item.tag}}">
+                <h5 class="d-flex justify-content-between">
+                    <span class="badge text-bg-{{Colors[Item.tag]}}"> {{Item.description}} </span>
+                    <span>
+                        <a href="{{ url_for('static', filename='assets/Gallery/'+Item.name) }}" class="nav-link p-0 text-body-secondary" download>
+                            <i class="fa-solid fa-download me-2"></i> تحميل 
+                        </a>
+                    </span>
+                    <span> {{Item.date}}</span>
+                </h5>
+                <div class="text-center">
+                    {% if Item.type == "Image" %}
+                        <img height="300" width="300" src="{{url_for('static', filename='assets/Gallery/'+Item.name)}}" alt="kitchen">
+                    {% else %}
+                        <video controls style="width: 300px; height:300px;">
+                            <source src="{{url_for('static', filename='assets/Gallery/'+Item.name)}}">
+                        </video>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
+
+{% block ScriptsContent %}
+<script>
+    const Buttons = Array.from(document.getElementsByClassName("TypeButton"))
+    const Items = Array.from(document.getElementsByClassName("Item"))
+    Buttons.forEach(button => {
+        button.onclick = (e) => {
+            let Type = e.target.getAttribute("data-type")
+            Items.forEach(item => {
+                if (Type === "All"){
+                    item.classList.remove("d-none")
+                }else{
+                    if (item.classList.contains(Type)){
+                        item.classList.remove("d-none")
+                    }else{
+                        item.classList.add("d-none")
+                    }
+                }
+            })
+        }
+    })
+</script>
+{% endblock %}

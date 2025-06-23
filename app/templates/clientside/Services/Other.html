@@ -1,0 +1,199 @@
+{% extends 'clientside/main.html' %}
+
+{% block HeadContent %}
+{% endblock %}
+
+{% block PageContent %}
+    <main>
+        <header class="ServiceHeader">
+            <div class="text-center">
+                <h2 class="m-4 SectionTitle">من نحن؟ وماذا نقدّم في مجال الوحدات؟</h2>
+                <p class="m-2">
+                    في شركة الإسراء، نتميّز بتقديم خدمات متكاملة في تصميم وتنفيذ وحدات الألومنيوم الخاصة بالمحلات، المعارض، والحمامات، باستخدام أفضل الخامات مثل الكلادينج، UV، خشامونيوم، والبورديوم. كما نوفر حلولاً متقدمة لديكورات الوحدات وحمايتها الخارجية، لتناسب هوية مشروعك وتمنحه مظهراً احترافياً ومتيناً يدوم طويلاً.
+                </p>
+                <a class="btn btn-primary" href="#hanging-icons">استعرض خدماتنا الآن</a>
+            </div>
+        </header>
+
+        <div class="container px-4 py-5" id="Units">
+            <h2 class="m-4 SectionTitle">خدمة تصميم وتنفيذ الوحدات</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5">
+                <!-- النص التعريفي -->
+                <div class="col d-flex flex-column align-items-start gap-2">
+                    <h2 class="fw-bold text-body-emphasis">وحدات ألومنيوم متكاملة للمحلات والمعارض و الحمامات</h2>
+                    <p class="text-body-secondary">
+                        نقدم وحدات عرض احترافية من خامات متعددة مثل الكلادينج، يو في، وخشامونيوم بتصميمات تبرز هوية علامتك التجارية وتجذب الانتباه، مع الاهتمام بأدق التفاصيل من حيث المتانة والجمالية.
+                    </p>
+                    <a href="{{url_for('Other')}}" class="btn btn-primary btn-lg">اطلب وحدتك الآن</a>
+                </div>
+
+                <!-- العناصر -->
+                <div class="col">
+                    <div class="row row-cols-1 row-cols-sm-2 g-4">
+
+                        <!-- كلادينج -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">وحدات كلادينج</h4>
+                            <p class="text-body-secondary">خامة عصرية لواجهة لامعة ومتينة، سهلة التنظيف ومناسبة لجميع الأذواق.</p>
+                        </div>
+
+                        <!-- يو في UV -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">وحدات UV</h4>
+                            <p class="text-body-secondary">تشطيبات لامعة بألوان جذابة ومقاومة للخدوش، مثالية للمساحات الداخلية الحديثة.</p>
+                        </div>
+
+                        <!-- خشامونيوم -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">وحدات خشامونيوم</h4>
+                            <p class="text-body-secondary">دمج بين متانة الألومنيوم ولمسة الخشب الطبيعية لعرض فاخر وفريد.</p>
+                        </div>
+
+                        <!-- بورديوم -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">وحدات بورديوم</h4>
+                            <p class="text-body-secondary">خامة مقاومة للماء والرطوبة، مثالية للاستخدام في الحمامات أو الأماكن المعرضة للاحتكاك العالي، تجمع بين الصلابة وسهولة التنظيف.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-0" id="ImagesContainer">
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit1.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit2.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit3.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit4.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit5.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit6.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit7.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Units/Unit8.jpg')}}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="container px-4 py-5" id="Faces">
+            <h2 class="m-4 SectionTitle">خدمة تنفيذ الديكورات الخارجية للوحدات</h2>
+            <div class="row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5">
+                <!-- النص التعريفي -->
+                <div class="col d-flex flex-column align-items-start gap-2">
+                    <h2 class="fw-bold text-body-emphasis">ديكورات ألومنيوم وشاشات جمالية مخصصة للوحدات</h2>
+                    <p class="text-body-secondary">
+                        نقدم لك خيارات متعددة من الديكورات والشاشات الجمالية التي تُركب على الوحدات الألومنيوم لإضفاء لمسة فنية واحترافية مميزة. تتوفر بتصميمات متنوعة وألوان متعددة لتناسب هوية مشروعك وتزيد من جاذبية العرض.
+                    </p>
+                    <a href="{{url_for('Other')}}" class="btn btn-primary btn-lg">استعرض الأشكال الآن</a>
+                </div>
+
+                <!-- العناصر -->
+                <div class="col">
+                    <div class="row row-cols-1 row-cols-sm-2 g-4">
+
+                        <!-- ديكور مثقّب -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">ديكور مثقّب</h4>
+                            <p class="text-body-secondary">تصميمات هندسية مفرّغة تضيف طابعاً عصرياً ومميزاً على الواجهة.</p>
+                        </div>
+
+                        <!-- ديكور زخرفي -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">ديكور زخرفي</h4>
+                            <p class="text-body-secondary">نقوش وزخارف دقيقة تضيف لمسة فنية كلاسيكية أو إسلامية حسب الاختيار.</p>
+                        </div>
+
+                        <!-- اوشاش مخرّم -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">اوشاش مخرّم</h4>
+                            <p class="text-body-secondary">طبقة حماية خفيفة ومخرّمة تدمج بين الجمالية والتهوية، مثالية للواجهات الزجاجية أو المناطق التي تتطلب مرور الضوء والهواء.</p>
+                        </div>
+
+                        <!-- ديكور حسب الطلب -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">تصميم خاص حسب الطلب</h4>
+                            <p class="text-body-secondary">ننفّذ لك أي فكرة تصميمية ترغب بها لتناسب مشروعك بدقة وتميز.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row row-cols-1 row-cols-lg-2 g-0" id="ImagesContainer">
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Other1.jpg')}}" />
+                </div>
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Other3.jpg')}}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="container px-4 py-5" id="Protection">
+            <h2 class="m-4 SectionTitle">خدمة تنفيذ الحماية الخارجية للوحدات</h2>
+            <div class="row row-cols-1 row-cols-lg-2 align-items-md-center g-5 py-5">
+                <!-- النص التعريفي -->
+                <div class="col d-flex flex-column align-items-start gap-2">
+                    <h2 class="fw-bold text-body-emphasis">حمايات ألومنيوم وشاشات قوية للوحدات</h2>
+                    <p class="text-body-secondary">
+                        نقدم حلول حماية متكاملة للوحدات باستخدام خامات عالية الجودة وتصميمات متينة تحمي وحدتك من العوامل الخارجية كالمطر، الغبار، والاحتكاك اليومي، مع الحفاظ على الشكل الجمالي للواجهة.
+                    </p>
+                    <a href="{{url_for('Other')}}" class="btn btn-primary btn-lg">اكتشف وسائل الحماية</a>
+                </div>
+
+                <!-- العناصر -->
+                <div class="col">
+                    <div class="row row-cols-1 row-cols-sm-2 g-4">
+
+                        <!-- اوشاش حماية خارجي -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">اوشاش حماية خارجي</h4>
+                            <p class="text-body-secondary">طبقات شبكية مقاومة للعوامل الجوية توفر الحماية مع الحفاظ على التهوية والإضاءة.</p>
+                        </div>
+
+                        <!-- تغطية ألومنيوم كاملة -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">تغطية ألومنيوم كاملة</h4>
+                            <p class="text-body-secondary">ألواح قوية تغطي الوحدة بالكامل لحمايتها من الخدوش، الماء، والتآكل.</p>
+                        </div>
+
+                        <!-- بورديوم مضاد للماء -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">ألواح بورديوم مقاومة للماء</h4>
+                            <p class="text-body-secondary">مثالية للحمامات أو الأماكن المعرضة للرطوبة، متينة وسهلة التنظيف.</p>
+                        </div>
+
+                        <!-- حماية حسب الطلب -->
+                        <div class="col d-flex flex-column gap-2">
+                            <h4 class="fw-semibold mb-0 text-body-emphasis">حماية حسب الطلب</h4>
+                            <p class="text-body-secondary">يمكن تصميم نظام حماية مخصص بناءً على متطلبات مشروعك ومكان الاستخدام.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- الصور -->
+            <div class="row row-cols-1 g-0" id="ImagesContainer">
+                <div class="col">
+                    <img class="w-100 h-100" style="max-height: 500px;" src="{{url_for('static', filename='assets/Other/Other2.jpg')}}" alt="حماية خارجية 1" />
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block ScriptsContent %}
+{% endblock %}
