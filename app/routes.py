@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from app import app, db
 from app.models import Users, TextSummary, BookSummary
+import random
 
 @app.route('/')
 def Home():
@@ -11,7 +12,7 @@ def Login():
     try:
         data = request.get_json()
         user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
-        
+
         if user:
             return jsonify({"message": "Found User", "status": "success"}), 200
         else:
@@ -68,3 +69,17 @@ def AddBookSummary():
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
+@app.route("/Register", methods=["POST"])
+def Register():
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+        user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
+        if user:
+            return jsonify({"message": "User Exsits", "status": "failed"}), 400
+        else:
+            OTP = random.randint(100000,000000)
+            return jsonify({"message": "OTP Geranted", "status": "pending","OTP":OTP}), 200
+    except Exception as e:
+        return jsonify({"message":"Error Is: "+str(e), "status":"failed"}), 500
