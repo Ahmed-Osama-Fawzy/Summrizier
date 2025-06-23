@@ -9,4 +9,4 @@ if uri and uri.startswith("postgres://"):
 class Config:
     SQLALCHEMY_DATABASE_URI = uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.urandom(24)  # or another method to set a secret key
+    SECRET_KEY = os.urandom(24)
