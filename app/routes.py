@@ -11,10 +11,12 @@ def Login():
     try:
         data = request.get_json()
         user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
+        
         if user:
             return jsonify({"message": "Found User", "status": "success"}), 200
         else:
             return jsonify({"message": "Account not found", "status": "failed"}), 404
+        
     except Exception as e:
         return jsonify({"message": f"Server error, {str(e)}", "status": "failed"}), 500
 
