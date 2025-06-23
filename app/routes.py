@@ -77,7 +77,7 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'Elkhayalsoftwarecompany@gmail.com'
 app.config['MAIL_PASSWORD'] = 'eLKHAYAL1-1sOFTWARE2-2cOMPANY3-3'
-app.config['MAIL_DEFAULT_SENDER'] = 'azzzain2@gmail.com'
+app.config['MAIL_DEFAULT_SENDER'] = 'Elkhayalsoftwarecompany@gmail.com'
 mail = Mail(app)
 
 def send_otp_email(email, otp):
