@@ -19,3 +19,5 @@ class BookSummary(db.Model):
     Summary = db.Column(db.Text, nullable=False)
     user = db.relationship('Users', backref=db.backref('summaries', lazy=True))
     
+
+    
