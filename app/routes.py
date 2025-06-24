@@ -4,6 +4,7 @@ from app import app, db
 from app.models import Users, TextSummary, BookSummary
 import random
 import time
+import smtplib
 
 @app.route('/')
 def Home():
@@ -71,20 +72,13 @@ def AddBookSummary():
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'Elkhayalsoftwarecompany@gmail.com'
-app.config['MAIL_PASSWORD'] = 'lohp npdu pazd bpcp'
-app.config['MAIL_DEFAULT_SENDER'] = 'Elkhayalsoftwarecompany@gmail.com'
-mail = Mail(app)
-
 def send_otp_email(email, otp):
     try:
-        msg = Message("Your OTP Code", recipients=[email])
-        msg.body = f"Your OTP code is: {otp}\nIt will expire in 5 minutes."
-        mail.send(msg)
+        msg = otp + " is your OTP Code"
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+        s.starttls()
+        s.login('ahmd.osama2611@gmail.com', 'cjfdimgkdpfegusf')
+        s.sendmail('ahmd.osama2611@gmail.com',email,msg)
         return True
     except Exception as e:
         print(f"Email sending failed: {e}")
@@ -149,13 +143,3 @@ def VerifyOTP():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
-    
-@app.route('/test-email')
-def test_email():
-    try:
-        msg = Message("Test Email", recipients=["ahmdosama2611@gmail.com"])
-        msg.body = "This is a test email from Flask."
-        mail.send(msg)
-        return "Email sent!"
-    except Exception as e:
-        return f"Error: {str(e)}"
