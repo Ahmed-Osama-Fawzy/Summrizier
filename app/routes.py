@@ -144,7 +144,7 @@ def VerifyOTP():
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
 
-@app.route("BookSummarizes", methods=["POST"])
+@app.route("/BookSummarizes", methods=["POST"])
 def BookSummarizes():
     try:
         data = request.get_json()
@@ -154,7 +154,7 @@ def BookSummarizes():
     except Exception as e:
         return jsonify({"message":f"Error Is {str(e)}", "status":"failed"}), 500
     
-@app.route("TextSummarizes", methods=["POST"])
+@app.route("/TextSummarizes", methods=["POST"])
 def TextSummarizes():
     try:
         data = request.get_json()
