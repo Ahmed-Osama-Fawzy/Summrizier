@@ -1,5 +1,4 @@
 from flask import jsonify, request
-from flask_mail import Mail, Message
 from app import app, db
 from app.models import Users, TextSummary, BookSummary
 import random
@@ -31,6 +30,7 @@ def AddTextSummary():
         UserId = data.get("UserId")
         Text = data.get("Text")
         Summary = data.get("Summary")
+        Topic = data.get("Topic")
 
         if not all([UserId, Text, Summary]):
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
@@ -39,7 +39,7 @@ def AddTextSummary():
         if not user:
             return jsonify({"message": "User not found", "status": "failed"}), 404
 
-        newRecord = TextSummary(UserId=UserId, Text=Text, Summary=Summary)
+        newRecord = TextSummary(UserId=UserId, Text=Text, Summary=Summary, Topic=Topic)
         db.session.add(newRecord)
         db.session.commit()
 
@@ -55,6 +55,7 @@ def AddBookSummary():
         UserId = data.get("UserId")
         Book = data.get("Book")
         Summary = data.get("Summary")
+        Topic = data.get("Topic")
 
         if not all([UserId, Book, Summary]):
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
@@ -63,7 +64,7 @@ def AddBookSummary():
         if not user:
             return jsonify({"message": "User not found", "status": "failed"}), 404
 
-        newRecord = BookSummary(UserId=UserId, Book=Book, Summary=Summary)
+        newRecord = BookSummary(UserId=UserId, Book=Book, Summary=Summary, Topic=Topic)
         db.session.add(newRecord)
         db.session.commit()
 
@@ -72,7 +73,7 @@ def AddBookSummary():
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
-def send_otp_email(email, otp):
+def SendOTPEmail(email, otp):
     try:
         msg = otp + " is your OTP Code"
         s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -106,14 +107,13 @@ def Register():
             "expires_at": time.time() + 300
         }
 
-        if send_otp_email(email, otp):
+        if SendOTPEmail(email, otp):
             return jsonify({"message": "OTP sent to your email", "status": "pending"}), 200
         else:
             return jsonify({"message": "Failed to send OTP email", "status": "failed"}), 500
 
     except Exception as e:
         return jsonify({"message": "Error: " + str(e), "status": "failed"}), 500
-
 
 @app.route("/VerifyOTP", methods=["POST"])
 def VerifyOTP():
@@ -143,3 +143,23 @@ def VerifyOTP():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
+
+@app.route("BookSummarizes", methods=["POST"])
+def BookSummarizes():
+    try:
+        data = request.get_json()
+        UseId = data.get("id")
+        data = BookSummary.query.filter_by(UseId == UseId).all()
+        return jsonify({"message":"data finded", "status":"success", "data":data}), 200
+    except Exception as e:
+        return jsonify({"message":f"Error Is {str(e)}", "status":"failed"}), 500
+    
+@app.route("TextSummarizes", methods=["POST"])
+def TextSummarizes():
+    try:
+        data = request.get_json()
+        UseId = data.get("id")
+        data = TextSummary.query.filter_by(UseId == UseId).all()
+        return jsonify({"message":"data finded", "status":"success", "data":data}), 200
+    except Exception as e:
+        return jsonify({"message":f"Error Is {str(e)}", "status":"failed"}), 500

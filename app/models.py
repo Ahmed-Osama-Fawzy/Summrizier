@@ -13,9 +13,11 @@ class TextSummary(db.Model):
     UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     Text = db.Column(db.Text, nullable=False)
     Summary = db.Column(db.Text, nullable=False)
+    Topic = db.Column(db.String(255), nullable=True)
 
 class BookSummary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     Book = db.Column(db.Text, nullable=False)
     Summary = db.Column(db.Text, nullable=False)
+    Topic = db.Column(db.String(255), nullable=True)
