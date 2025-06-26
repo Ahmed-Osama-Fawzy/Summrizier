@@ -9,6 +9,10 @@ from datetime import datetime, timedelta
 from functools import wraps
 from flask_cors import CORS
 
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from peft import PeftModel, PeftConfig
+import torch
+
 # ✅ Add CORS middleware AFTER app definition
 CORS(app, resources={
     r"/*": {
@@ -416,4 +420,30 @@ def GetAllChat(current_user):
         return jsonify({"message": "All book chat deleted", "status": "success", "data":data}), 200
     except Exception as e:
         db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+def SAPI():
+    peft_model_id = "mzizo4110/Summarization_Continue"
+    config = PeftConfig.from_pretrained(peft_model_id)
+    tokenizer = AutoTokenizer.from_pretrained(config.base_model_name_or_path)
+    base_model = AutoModelForSeq2SeqLM.from_pretrained(config.base_model_name_or_path)
+    model = PeftModel.from_pretrained(base_model, peft_model_id)
+    model.eval()
+    return model, tokenizer
+
+
+@app.route("SummaryText", methods=["POST"])
+def SummaryText():
+    try:
+        model, tokenizer = SAPI()
+        data = request.get_json()
+        text = data.get("text")
+        inputs = tokenizer("summarize: " + text, return_tensors="pt", truncation=True)
+        # Generate summary
+        with torch.no_grad():
+            outputs = model.generate(**inputs, max_length=256, num_beams=8, early_stopping=True)
+        # Decode and print summary
+        summary = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return jsonify({"message": "Text Summarized", "status": "success", "data":summary}), 200
+    except Exception as e:
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
