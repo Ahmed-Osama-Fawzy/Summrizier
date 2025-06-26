@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Users, TextSummary, BookSummary
+from app.models import Users, TextSummary, BookSummary, ChatStorage
 import random
 import time
 import smtplib
@@ -364,3 +364,26 @@ def DeleteAllBookSummaries(current_user):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
+    
+
+@app.route("/AddChat", methods=["POST"])
+@token_required
+def AddChat(current_user):
+    try:
+        data = request.get_json()
+        UserId = current_user.id
+        BookId = data.get("BookId")
+        Question = data.get("Question")
+        Answer = data.get("Answer")
+
+        if not all([BookId, Question, Answer]):  # ✅ FIXED: Added Topic to validation
+            return jsonify({"message": "Missing fields", "status": "failed"}), 400
+
+        newRecord = ChatStorage(UserId=UserId, BookId=BookId, Question=Question, Answer=Answer)
+        db.session.add(newRecord)
+        db.session.commit()
+
+        return jsonify({"message": "Chat Added Successfully", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500

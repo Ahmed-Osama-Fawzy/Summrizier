@@ -21,3 +21,11 @@ class BookSummary(db.Model):
     Book = db.Column(db.Text, nullable=False)
     Summary = db.Column(db.Text, nullable=False)
     Topic = db.Column(db.String(255), nullable=True)
+
+class ChatStorage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    BookId = db.Column(db.Integer, db.ForeignKey('booksummary.id'), nullable=False)
+    Question = db.Column(db.Text, nullable=False)
+    Answer = db.Column(db.Text, nullable=False)
+    
