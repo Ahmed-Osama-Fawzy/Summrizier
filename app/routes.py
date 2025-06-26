@@ -4,6 +4,71 @@ from app.models import Users, TextSummary, BookSummary
 import random
 import time
 import smtplib
+import jwt
+from datetime import datetime, timedelta
+from functools import wraps
+from flask_cors import CORS
+
+# ✅ Add CORS middleware AFTER app definition
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],  # Angular default ports
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+    }
+})
+print("CORS middleware added.")
+
+# JWT Configuration
+JWT_SECRET = "your-secret-key-change-this-in-production"
+JWT_ALGORITHM = "HS256"
+
+def generate_token(user_id, email):
+    """Generate JWT token for user"""
+    payload = {
+        'user_id': user_id,
+        'email': email,
+        'exp': datetime.utcnow() + timedelta(days=7),  # Token expires in 7 days
+        'iat': datetime.utcnow()
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def verify_token(token):
+    """Verify JWT token"""
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+def token_required(f):
+    """Decorator to require JWT token"""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            try:
+                token = auth_header.split(" ")[1]  # Bearer <token>
+            except IndexError:
+                return jsonify({'message': 'Token is missing', 'status': 'failed'}), 401
+        
+        if not token:
+            return jsonify({'message': 'Token is missing', 'status': 'failed'}), 401
+        
+        payload = verify_token(token)
+        if not payload:
+            return jsonify({'message': 'Token is invalid or expired', 'status': 'failed'}), 401
+        
+        current_user = Users.query.get(payload['user_id'])
+        if not current_user:
+            return jsonify({'message': 'User not found', 'status': 'failed'}), 401
+        
+        return f(current_user, *args, **kwargs)
+    
+    return decorated
 
 @app.route('/')
 def Home():
@@ -16,28 +81,36 @@ def Login():
         user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
 
         if user:
-            return jsonify({"message": "Found User", "status": "success"}), 200
+            # Generate JWT token
+            token = generate_token(user.id, user.email)
+            return jsonify({
+                "message": "Login successful", 
+                "status": "success",
+                "token": token,
+                "user": {
+                    "id": user.id,
+                    "email": user.email
+                }
+            }), 200
         else:
-            return jsonify({"message": "Account not found", "status": "failed"}), 404
+            return jsonify({"message": "Invalid credentials", "status": "failed"}), 401
         
     except Exception as e:
         return jsonify({"message": f"Server error, {str(e)}", "status": "failed"}), 500
 
+# ✅ FIXED: Added Topic to validation
 @app.route("/AddTextSummary", methods=["POST"])
-def AddTextSummary():
+@token_required
+def AddTextSummary(current_user):
     try:
         data = request.get_json()
-        UserId = data.get("UserId")
+        UserId = current_user.id  # Use authenticated user's ID
         Text = data.get("Text")
         Summary = data.get("Summary")
         Topic = data.get("Topic")
 
-        if not all([UserId, Text, Summary]):
+        if not all([Text, Summary, Topic]):  # ✅ FIXED: Added Topic to validation
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
-
-        user = Users.query.get(UserId)
-        if not user:
-            return jsonify({"message": "User not found", "status": "failed"}), 404
 
         newRecord = TextSummary(UserId=UserId, Text=Text, Summary=Summary, Topic=Topic)
         db.session.add(newRecord)
@@ -48,21 +121,19 @@ def AddTextSummary():
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
+# ✅ FIXED: Added Topic to validation
 @app.route("/AddBookSummary", methods=["POST"])
-def AddBookSummary():
+@token_required
+def AddBookSummary(current_user):
     try:
         data = request.get_json()
-        UserId = data.get("UserId")
+        UserId = current_user.id  # Use authenticated user's ID
         Book = data.get("Book")
         Summary = data.get("Summary")
         Topic = data.get("Topic")
 
-        if not all([UserId, Book, Summary]):
+        if not all([Book, Summary, Topic]):  # ✅ FIXED: Added Topic to validation
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
-
-        user = Users.query.get(UserId)
-        if not user:
-            return jsonify({"message": "User not found", "status": "failed"}), 404
 
         newRecord = BookSummary(UserId=UserId, Book=Book, Summary=Summary, Topic=Topic)
         db.session.add(newRecord)
@@ -75,11 +146,14 @@ def AddBookSummary():
 
 def SendOTPEmail(email, otp):
     try:
-        msg = otp + " is your OTP Code"
+        subject = "Verification Email"
+        body = f"Your OTP Code is: {otp}"
+        msg = f"Subject: {subject}\n\n{body}"
         s = smtplib.SMTP('smtp.gmail.com', 587)
         s.starttls()
-        s.login('ahmd.osama2611@gmail.com', 'cjfdimgkdpfegusf')
-        s.sendmail('ahmd.osama2611@gmail.com',email,msg)
+        s.login('ahmd.osama2611@gmail.com', 'cjfdimgkdpfegusf')  # Consider using environment variables or app passwords securely!
+        s.sendmail('ahmd.osama2611@gmail.com', email, msg)
+        s.quit()
         return True
     except Exception as e:
         print(f"Email sending failed: {e}")
@@ -136,30 +210,157 @@ def VerifyOTP():
         new_user = Users(email=email, password=record["password"])
         db.session.add(new_user)
         db.session.commit()
+        
+        # Generate JWT token for newly registered user
+        token = generate_token(new_user.id, new_user.email)
+        
         del OTP_STORE[email]
 
-        return jsonify({"message": "User registered successfully", "status": "success"}), 200
+        return jsonify({
+            "message": "User registered successfully", 
+            "status": "success",
+            "token": token,
+            "user": {
+                "id": new_user.id,
+                "email": new_user.email
+            }
+        }), 200
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
 
-@app.route("/BookSummarizes", methods=["POST"])
-def BookSummarizes():
+# ✅ FIXED: Changed to GET method
+@app.route("/BookSummarizes", methods=["GET"])
+@token_required
+def BookSummarizes(current_user):
     try:
-        data = request.get_json()
-        UseId = data.get("id")
-        data = BookSummary.query.filter_by(UseId == UseId).all()
-        return jsonify({"message":"data finded", "status":"success", "data":data}), 200
+        data = BookSummary.query.filter_by(UserId=current_user.id).all()
+        summaries = []
+        for summary in data:
+            summaries.append({
+                "id": summary.id,
+                "Book": summary.Book,
+                "Summary": summary.Summary,
+                "Topic": summary.Topic
+            })
+        return jsonify({"message": "Data found", "status": "success", "data": summaries}), 200
     except Exception as e:
-        return jsonify({"message":f"Error Is {str(e)}", "status":"failed"}), 500
+        return jsonify({"message": f"Error Is {str(e)}", "status": "failed"}), 500
     
-@app.route("/TextSummarizes", methods=["POST"])
-def TextSummarizes():
+# ✅ FIXED: Changed to GET method
+@app.route("/TextSummarizes", methods=["GET"])
+@token_required
+def TextSummarizes(current_user):
+    try:
+        data = TextSummary.query.filter_by(UserId=current_user.id).all()
+        summaries = []
+        for summary in data:
+            summaries.append({
+                "id": summary.id,
+                "Text": summary.Text,
+                "Summary": summary.Summary,
+                "Topic": summary.Topic
+            })
+        return jsonify({"message": "Data found", "status": "success", "data": summaries}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error Is {str(e)}", "status": "failed"}), 500
+
+# Add a route to verify token validity
+@app.route("/VerifyToken", methods=["POST"])
+def VerifyToken():
     try:
         data = request.get_json()
-        UseId = data.get("id")
-        data = TextSummary.query.filter_by(UseId == UseId).all()
-        return jsonify({"message":"data finded", "status":"success", "data":data}), 200
+        token = data.get("token")
+        
+        if not token:
+            return jsonify({"message": "Token is missing", "status": "failed"}), 401
+        
+        payload = verify_token(token)
+        if not payload:
+            return jsonify({"message": "Token is invalid or expired", "status": "failed"}), 401
+        
+        user = Users.query.get(payload['user_id'])
+        if not user:
+            return jsonify({"message": "User not found", "status": "failed"}), 401
+        
+        return jsonify({
+            "message": "Token is valid", 
+            "status": "success",
+            "user": {
+                "id": user.id,
+                "email": user.email
+            }
+        }), 200
+        
     except Exception as e:
-        return jsonify({"message":f"Error Is {str(e)}", "status":"failed"}), 500
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+
+
+@app.route("/DeleteTextSummary", methods=["POST"])
+@token_required
+def DeleteTextSummary(current_user):
+
+    try:
+        data = request.get_json()
+        summary_id = data.get("id")
+        if not summary_id:
+            return jsonify({"message": "Missing summary id", "status": "failed"}), 400
+
+        summary = TextSummary.query.filter_by(id=summary_id, UserId=current_user.id).first()
+        if not summary:
+            return jsonify({"message": "Summary not found", "status": "failed"}), 404
+
+        db.session.delete(summary)
+        db.session.commit()
+        return jsonify({"message": "Text summary deleted", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+    
+
+@app.route("/DeleteBookSummary", methods=["POST"])
+@token_required
+def DeleteBookSummary(current_user):
+
+    try:
+        data = request.get_json()
+        summary_id = data.get("id")
+        if not summary_id:
+            return jsonify({"message": "Missing summary id", "status": "failed"}), 400
+
+        summary = BookSummary.query.filter_by(id=summary_id, UserId=current_user.id).first()
+        if not summary:
+            return jsonify({"message": "Summary not found", "status": "failed"}), 404
+
+        db.session.delete(summary)
+        db.session.commit()
+        return jsonify({"message": "Book summary deleted", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
+    
+
+
+@app.route("/DeleteAllTextSummaries", methods=["POST"])
+@token_required
+def DeleteAllTextSummaries(current_user):
+    try:
+        TextSummary.query.filter_by(UserId=current_user.id).delete()
+        db.session.commit()
+        return jsonify({"message": "All text summaries deleted", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+@app.route("/DeleteAllBookSummaries", methods=["POST"])
+@token_required
+def DeleteAllBookSummaries(current_user):
+    try:
+        BookSummary.query.filter_by(UserId=current_user.id).delete()
+        db.session.commit()
+        return jsonify({"message": "All book summaries deleted", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
