@@ -387,3 +387,33 @@ def AddChat(current_user):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+@app.route("/DeleteAllChat", methods=["POST"])
+@token_required
+def DeleteAllChat(current_user):
+    try:
+        data = request.get_json()
+        Book_Id = data.get("id")
+        if not Book_Id:
+            return jsonify({"message": "Missing Book id", "status": "failed"}), 400
+        ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=Book_Id).delete()
+        db.session.commit()
+        return jsonify({"message": "All book chat deleted", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+@app.route("/GetAllChat", methods=["POST"])
+@token_required
+def GetAllChat(current_user):
+    try:
+        data = request.get_json()
+        Book_Id = data.get("id")
+        if not Book_Id:
+            return jsonify({"message": "Missing Book id", "status": "failed"}), 400
+        data = ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=Book_Id).all()
+        db.session.commit()
+        return jsonify({"message": "All book chat deleted", "status": "success", "data":data}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500

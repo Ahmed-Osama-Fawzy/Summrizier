@@ -25,7 +25,6 @@ class BookSummary(db.Model):
 class ChatStorage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    BookId = db.Column(db.Integer, db.ForeignKey('booksummary.id'), nullable=False)
+    BookId = db.Column(db.Integer, db.ForeignKey('book_summary.id'), nullable=False)
     Question = db.Column(db.Text, nullable=False)
     Answer = db.Column(db.Text, nullable=False)
-    
