@@ -374,7 +374,7 @@ def AddChat(current_user):
     try:
         data = request.get_json()
         UserId = current_user.id
-        BookId = data.get("BookId")
+        BookId = data.get("booksummaryId")
         Question = data.get("Question")
         Answer = data.get("Answer")
 
