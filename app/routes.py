@@ -329,6 +329,7 @@ def DeleteBookSummary(current_user):
         summary_id = data.get("id")
         if not summary_id:
             return jsonify({"message": "Missing summary id", "status": "failed"}), 400
+        
         chat = ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=summary_id).delete()
         db.session.delete(chat)
 
@@ -361,6 +362,7 @@ def DeleteAllTextSummaries(current_user):
 def DeleteAllBookSummaries(current_user):
     try:
         BookSummary.query.filter_by(UserId=current_user.id).delete()
+        ChatStorage.query.filter_by(UserId=current_user.id).delete()
         db.session.commit()
         return jsonify({"message": "All book summaries deleted", "status": "success"}), 200
     except Exception as e:
