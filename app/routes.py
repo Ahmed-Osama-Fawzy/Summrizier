@@ -9,10 +9,6 @@ from datetime import datetime, timedelta
 from functools import wraps
 from flask_cors import CORS
 
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from peft import PeftModel, PeftConfig
-import torch
-
 # ✅ Add CORS middleware AFTER app definition
 CORS(app, resources={
     r"/*": {
@@ -333,6 +329,8 @@ def DeleteBookSummary(current_user):
         summary_id = data.get("id")
         if not summary_id:
             return jsonify({"message": "Missing summary id", "status": "failed"}), 400
+        chat = ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=summary_id).delete()
+        db.session.delete(chat)
 
         summary = BookSummary.query.filter_by(id=summary_id, UserId=current_user.id).first()
         if not summary:
@@ -392,20 +390,6 @@ def AddChat(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
-@app.route("/DeleteAllChat", methods=["POST"])
-@token_required
-def DeleteAllChat(current_user):
-    try:
-        data = request.get_json()
-        Book_Id = data.get("id")
-        if not Book_Id:
-            return jsonify({"message": "Missing Book id", "status": "failed"}), 400
-        ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=Book_Id).delete()
-        db.session.commit()
-        return jsonify({"message": "All book chat deleted", "status": "success"}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
 @app.route("/GetAllChat", methods=["POST"])
 @token_required
@@ -420,30 +404,4 @@ def GetAllChat(current_user):
         return jsonify({"message": "All book chat deleted", "status": "success", "data":data}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
-
-def SAPI():
-    peft_model_id = "mzizo4110/Summarization_Continue"
-    config = PeftConfig.from_pretrained(peft_model_id)
-    tokenizer = AutoTokenizer.from_pretrained(config.base_model_name_or_path)
-    base_model = AutoModelForSeq2SeqLM.from_pretrained(config.base_model_name_or_path)
-    model = PeftModel.from_pretrained(base_model, peft_model_id)
-    model.eval()
-    return model, tokenizer
-
-
-@app.route("SummaryText", methods=["POST"])
-def SummaryText():
-    try:
-        model, tokenizer = SAPI()
-        data = request.get_json()
-        text = data.get("text")
-        inputs = tokenizer("summarize: " + text, return_tensors="pt", truncation=True)
-        # Generate summary
-        with torch.no_grad():
-            outputs = model.generate(**inputs, max_length=256, num_beams=8, early_stopping=True)
-        # Decode and print summary
-        summary = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        return jsonify({"message": "Text Summarized", "status": "success", "data":summary}), 200
-    except Exception as e:
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
