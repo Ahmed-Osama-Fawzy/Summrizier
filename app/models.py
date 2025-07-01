@@ -22,9 +22,30 @@ class BookSummary(db.Model):
     Summary = db.Column(db.Text, nullable=False)
     Topic = db.Column(db.String(255), nullable=True)
 
+    user = db.relationship('Users', backref='book_chats', lazy=True)
+    book = db.relationship('BookSummary', backref='chats', lazy=True)
+
 class ChatStorage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     BookId = db.Column(db.Integer, db.ForeignKey('book_summary.id'), nullable=False)
     Question = db.Column(db.Text, nullable=False)
     Answer = db.Column(db.Text, nullable=False)
+
+    user = db.relationship('Users', backref='book_chats', lazy=True)
+    book = db.relationship('BookSummary', backref='chats', lazy=True)
+
+class Quizes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    Score = db.Column(db.Integer, nullable=False)
+    Level = db.Column(db.String(255),  nullable=False)
+
+class Questions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    QuizId = db.Column(db.Integer, db.ForeignKey('quizes.id'), nullable=False)
+    Question = db.Column(db.Text, nullable=False)
+    UserAnswer = db.Column(db.Text, nullable=False)
+    RightAnswer = db.Column(db.Text, nullable=False)
+
+    questions = db.relationship('Questions', backref='quiz', cascade="all, delete", lazy=True)

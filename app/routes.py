@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Users, TextSummary, BookSummary, ChatStorage
+from app.models import Users, TextSummary, BookSummary, ChatStorage,  Questions,  Quizes
 import random
 import time
 import smtplib
@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from functools import wraps
 from flask_cors import CORS
 
-# ✅ Add CORS middleware AFTER app definition
 CORS(app, resources={
     r"/*": {
         "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],  # Angular default ports
@@ -17,7 +16,7 @@ CORS(app, resources={
         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
     }
 })
-print("CORS middleware added.")
+OTP_STORE = {}
 
 # JWT Configuration
 JWT_SECRET = "your-secret-key-change-this-in-production"
@@ -81,7 +80,6 @@ def Login():
         user = Users.query.filter_by(email=data.get("email"), password=data.get("password")).first()
 
         if user:
-            # Generate JWT token
             token = generate_token(user.id, user.email)
             return jsonify({
                 "message": "Login successful", 
@@ -98,7 +96,6 @@ def Login():
     except Exception as e:
         return jsonify({"message": f"Server error, {str(e)}", "status": "failed"}), 500
 
-# ✅ FIXED: Added Topic to validation
 @app.route("/AddTextSummary", methods=["POST"])
 @token_required
 def AddTextSummary(current_user):
@@ -121,18 +118,17 @@ def AddTextSummary(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
-# ✅ FIXED: Added Topic to validation
 @app.route("/AddBookSummary", methods=["POST"])
 @token_required
 def AddBookSummary(current_user):
     try:
         data = request.get_json()
-        UserId = current_user.id  # Use authenticated user's ID
+        UserId = current_user.id
         Book = data.get("Book")
         Summary = data.get("Summary")
         Topic = data.get("Topic")
 
-        if not all([Book, Summary, Topic]):  # ✅ FIXED: Added Topic to validation
+        if not all([Book, Summary, Topic]):
             return jsonify({"message": "Missing fields", "status": "failed"}), 400
 
         newRecord = BookSummary(UserId=UserId, Book=Book, Summary=Summary, Topic=Topic)
@@ -158,8 +154,7 @@ def SendOTPEmail(email, otp):
     except Exception as e:
         print(f"Email sending failed: {e}")
         return False
-    
-OTP_STORE = {} 
+
 @app.route("/Register", methods=["POST"])
 def Register():
     try:
@@ -230,7 +225,6 @@ def VerifyOTP():
         db.session.rollback()
         return jsonify({"message": f"Error is: {str(e)}", "status": "failed"}), 500
 
-# ✅ FIXED: Changed to GET method
 @app.route("/BookSummarizes", methods=["GET"])
 @token_required
 def BookSummarizes(current_user):
@@ -247,8 +241,7 @@ def BookSummarizes(current_user):
         return jsonify({"message": "Data found", "status": "success", "data": summaries}), 200
     except Exception as e:
         return jsonify({"message": f"Error Is {str(e)}", "status": "failed"}), 500
-    
-# ✅ FIXED: Changed to GET method
+
 @app.route("/TextSummarizes", methods=["GET"])
 @token_required
 def TextSummarizes(current_user):
@@ -266,7 +259,6 @@ def TextSummarizes(current_user):
     except Exception as e:
         return jsonify({"message": f"Error Is {str(e)}", "status": "failed"}), 500
 
-# Add a route to verify token validity
 @app.route("/VerifyToken", methods=["POST"])
 def VerifyToken():
     try:
@@ -295,8 +287,6 @@ def VerifyToken():
         
     except Exception as e:
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
-
-
 
 @app.route("/DeleteTextSummary", methods=["POST"])
 @token_required
@@ -352,8 +342,6 @@ def DeleteBookSummary(current_user):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
-    
-
 
 @app.route("/DeleteAllTextSummaries", methods=["POST"])
 @token_required
@@ -389,7 +377,6 @@ def DeleteAllBookSummaries(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
     
-
 @app.route("/AddChat", methods=["POST"])
 @token_required
 def AddChat(current_user):
@@ -412,7 +399,6 @@ def AddChat(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
-
 @app.route("/GetAllChat", methods=["POST"])
 @token_required
 def GetAllChat(current_user):
@@ -427,3 +413,83 @@ def GetAllChat(current_user):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+def AddNewQuiz(id, Score, Level):
+    try:
+        newQuiz = Quizes(UserId=id, Score=int(Score), Level=Level)
+        db.session.add(newQuiz)
+        db.session.commit()
+        lastId = Quizes.query.order_by(Quizes.id.desc()).first()
+        return True, lastId.id
+    except Exception as e:
+        return False, e
+
+@app.route("/AddQuiz", methods=["POST"])
+@token_required
+def AddQuiz(current_user):
+    try:
+        data = request.get_json()
+        UserId = current_user.id
+        Score = data.get("Score")
+        Level = data.get("Level")
+        questions = data.get("Questions")
+        if not Score or not questions:
+            return jsonify({"message": "Missing fields", "status": "failed"}), 400
+        Added, Status = AddNewQuiz(UserId, Score, Level)
+        if Added:
+            for Qu in questions:
+                newQuestion = Questions(
+                    QuizId=Status,
+                    Question=Qu.get("Question"),
+                    UserAnswer=Qu.get("UserAnswer"),
+                    RightAnswer=Qu.get("RightAnswer")
+                )
+                db.session.add(newQuestion)
+            db.session.commit()
+            return jsonify({"message": "Quiz Added Successfully", "status": "success"}), 200
+        else:
+            return jsonify({"message": f"{Status}", "status": "failed"}), 500
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+    
+
+@app.route("/DeleteQuiz/<int:quiz_id>", methods=["DELETE"])
+@token_required
+def DeleteQuiz(current_user, quiz_id):
+    try:
+        quiz = Quizes.query.filter_by(id=quiz_id, UserId=current_user.id).first()
+        if not quiz:
+            return jsonify({"message": "Quiz not found or unauthorized", "status": "failed"}), 404
+        db.session.delete(quiz)
+        db.session.commit()
+        return jsonify({"message": "Quiz deleted successfully", "status": "success"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
+
+@app.route("/GetUserQuizzes", methods=["GET"])
+@token_required
+def GetUserQuizzes(current_user):
+    try:
+        quizzes = Quizes.query.filter_by(UserId=current_user.id).all()
+
+        result = []
+        for quiz in quizzes:
+            quiz_data = {
+                "id": quiz.id,
+                "score": quiz.Score,
+                "questions": []
+            }
+            questions = Questions.query.filter_by(QuizId=quiz.id).all()
+            for q in questions:
+                quiz_data["questions"].append({
+                    "id": q.id,
+                    "question": q.Question,
+                    "userAnswer": q.UserAnswer,
+                    "rightAnswer": q.RightAnswer
+                })
+            result.append(quiz_data)
+        return jsonify({"status": "success", "quizzes": result}), 200
+    except Exception as e:
+        return jsonify({"status": "failed", "message": str(e)}), 500
