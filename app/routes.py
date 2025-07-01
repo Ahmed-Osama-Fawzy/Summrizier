@@ -319,6 +319,13 @@ def DeleteTextSummary(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
     
+def DelAllCahts(id, book_id):
+    try:
+        ChatStorage.query.filter_by(UserId=id, Book_Id=book_id).delete()
+        db.session.commit()
+        return True, ""
+    except Exception as e:
+        return False, e
 
 @app.route("/DeleteBookSummary", methods=["POST"])
 @token_required
@@ -330,16 +337,18 @@ def DeleteBookSummary(current_user):
         if not summary_id:
             return jsonify({"message": "Missing summary id", "status": "failed"}), 400
         
-        chat = ChatStorage.query.filter_by(UserId=current_user.id, Book_Id=summary_id).delete()
-        db.session.delete(chat)
 
         summary = BookSummary.query.filter_by(id=summary_id, UserId=current_user.id).first()
         if not summary:
             return jsonify({"message": "Summary not found", "status": "failed"}), 404
 
-        db.session.delete(summary)
-        db.session.commit()
-        return jsonify({"message": "Book summary deleted", "status": "success"}), 200
+        Deleted, Status = DelAllCahts(current_user.id, summary_id)
+        if Deleted:
+            db.session.delete(summary)
+            db.session.commit()
+            return jsonify({"message": "Book summary deleted", "status": "success"}), 200
+        else:
+            return jsonify({"message": f"{Status}", "status": "failed"}), 505
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
@@ -357,14 +366,25 @@ def DeleteAllTextSummaries(current_user):
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500
 
+def DelAllChat(id):
+    try:
+        ChatStorage.query.filter_by(UserId=id).delete()
+        db.session.commit()
+        return True, ""
+    except Exception as e:
+        return False, e
+
 @app.route("/DeleteAllBookSummaries", methods=["POST"])
 @token_required
 def DeleteAllBookSummaries(current_user):
     try:
-        BookSummary.query.filter_by(UserId=current_user.id).delete()
-        ChatStorage.query.filter_by(UserId=current_user.id).delete()
-        db.session.commit()
-        return jsonify({"message": "All book summaries deleted", "status": "success"}), 200
+        Deleted, Status = DelAllChat(current_user.id)
+        if Deleted:
+            BookSummary.query.filter_by(UserId=current_user.id).delete()
+            db.session.commit()
+            return jsonify({"message": "All book summaries deleted", "status": "success"}), 200
+        else:
+            return jsonify({"message": f"{Status}", "status": "failed"}), 505
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Server error: {str(e)}", "status": "failed"}), 500    
