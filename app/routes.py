@@ -321,7 +321,7 @@ def DeleteTextSummary(current_user):
     
 def DelAllCahts(id, book_id):
     try:
-        ChatStorage.query.filter_by(UserId=id, Book_Id=book_id).delete()
+        ChatStorage.query.filter_by(UserId=id, BookId=book_id).delete()
         db.session.commit()
         return True, ""
     except Exception as e:
