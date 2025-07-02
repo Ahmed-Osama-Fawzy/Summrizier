@@ -30,7 +30,9 @@ class Quizes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     UserId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     Score = db.Column(db.Integer, nullable=False)
-    Level = db.Column(db.String(255),  nullable=False)
+    Level = db.Column(db.String(255), nullable=False)
+
+    questions = db.relationship('Questions', backref='quiz', cascade="all, delete", lazy=True)
 
 class Questions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,5 +40,3 @@ class Questions(db.Model):
     Question = db.Column(db.Text, nullable=False)
     UserAnswer = db.Column(db.Text, nullable=False)
     RightAnswer = db.Column(db.Text, nullable=False)
-
-    questions = db.relationship('Questions', backref='quiz', cascade="all, delete", lazy=True)
