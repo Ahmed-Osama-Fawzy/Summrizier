@@ -147,8 +147,8 @@ def SendOTPEmail(email, otp):
         msg = f"Subject: {subject}\n\n{body}"
         s = smtplib.SMTP('smtp.gmail.com', 587)
         s.starttls()
-        s.login('ahmd.osama2611@gmail.com', 'cjfdimgkdpfegusf')  # Consider using environment variables or app passwords securely!
-        s.sendmail('ahmd.osama2611@gmail.com', email, msg)
+        s.login('sumgenq@gmail.com', 'lbrbwhrlnmbxhbwe')  # Consider using environment variables or app passwords securely!
+        s.sendmail('sumgenq@gmail.com', email, msg)
         s.quit()
         return True
     except Exception as e:
