@@ -40,3 +40,4 @@ class Questions(db.Model):
     Question = db.Column(db.Text, nullable=False)
     UserAnswer = db.Column(db.Text, nullable=False)
     RightAnswer = db.Column(db.Text, nullable=False)
+    Feedback = db.Column(db.Text, nullable=True)

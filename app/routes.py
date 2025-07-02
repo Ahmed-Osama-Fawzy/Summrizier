@@ -442,7 +442,8 @@ def AddQuiz(current_user):
                     QuizId=Status,
                     Question=Qu.get("question"),
                     UserAnswer=Qu.get("userAnswer"),
-                    RightAnswer=Qu.get("rightAnswer")
+                    RightAnswer=Qu.get("rightAnswer"),
+                    Feedback=Qu.get("feedback")
                 )
                 db.session.add(newQuestion)
             db.session.commit()
@@ -479,6 +480,7 @@ def GetUserQuizzes(current_user):
             quiz_data = {
                 "id": quiz.id,
                 "score": quiz.Score,
+                "level": quiz.Level,
                 "questions": []
             }
             questions = Questions.query.filter_by(QuizId=quiz.id).all()
@@ -487,7 +489,8 @@ def GetUserQuizzes(current_user):
                     "id": q.id,
                     "question": q.Question,
                     "userAnswer": q.UserAnswer,
-                    "rightAnswer": q.RightAnswer
+                    "rightAnswer": q.RightAnswer,
+                    "feedback": q.Feedback,
                 })
             result.append(quiz_data)
         return jsonify({"status": "success", "quizzes": result}), 200
