@@ -440,9 +440,9 @@ def AddQuiz(current_user):
             for Qu in questions:
                 newQuestion = Questions(
                     QuizId=Status,
-                    Question=Qu.get("Question"),
-                    UserAnswer=Qu.get("UserAnswer"),
-                    RightAnswer=Qu.get("RightAnswer")
+                    Question=Qu.get("question"),
+                    UserAnswer=Qu.get("userAnswer"),
+                    RightAnswer=Qu.get("rightAnswer")
                 )
                 db.session.add(newQuestion)
             db.session.commit()
