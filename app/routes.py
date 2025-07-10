@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:4200", "http://127.0.0.1:4200"],  # Angular default ports
+        "origins": ["https://graduation-project-puce-iota.vercel.app/"],  # Angular default ports
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
     }
