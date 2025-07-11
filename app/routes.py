@@ -9,11 +9,15 @@ from datetime import datetime, timedelta
 from functools import wraps
 from flask_cors import CORS
 
+
 CORS(app, resources={
     r"/*": {
-        "origins": ["https://graduation-project-puce-iota.vercel.app/"],  # Angular default ports
+        "origins": [
+            "https://graduation-project-puce-iota.vercel.app",  # No trailing slash!
+        ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+        "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
+        "supports_credentials": True  # If you use cookies or Authorization header
     }
 })
 OTP_STORE = {}
